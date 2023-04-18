@@ -50,6 +50,7 @@ int cmd_testcommand2(int argc, char *argv[])
   TEST_ASSERT_EQUAL_STRING("test2", argv[0]);
   TEST_ASSERT_EQUAL_STRING("arg 1", argv[1]);  
   TEST_ASSERT_EQUAL_STRING("arg\\2", argv[2]);
+  TEST_ASSERT_EQUAL_STRING("<err>", argv[3]); // out of range
   return 0;
 }
 

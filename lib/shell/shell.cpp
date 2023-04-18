@@ -82,6 +82,7 @@ void Shell::_execCmd(void)
   uint16_t u16_Args = 0;
   bool b_Escaped = false;
   bool b_Quoted = false;
+  char ac_Err[]="<err>";  
   
   // first, parse the string - split it into words, but allow escape character (\) 
   // and quotes ("")
@@ -118,6 +119,9 @@ void Shell::_execCmd(void)
     }
   }
   ac_Buffer[u16_BufferPos++]=0;
+  for(auto i=u16_Args; i<SHELL_MAX_ARGS; i++)
+    argv[i]=ac_Err;  // for safety, set pointer to defined string instead of pointing anywhere 
+
 
   // if no command found, quit
   if(u16_Args == 0)
