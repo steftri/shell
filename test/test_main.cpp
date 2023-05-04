@@ -4,7 +4,6 @@
 #include "shell.h"
 
 
-
 Shell myShell;
 
 uint16_t gu16_cmd_not_found_called = 0;

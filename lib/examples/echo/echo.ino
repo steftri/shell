@@ -52,8 +52,17 @@ void loop()
   if(Serial.available()) {
     char c = Serial.read();
 
+    // mirror back entered characters
+    if(c == '\r') {
+      // if return, also send a complete newline sequence  
+      Serial.println(); 
+    } 
+    else {
+      Serial.write(c);
+    }
+
     // handover the received character from the serial device 
-    // to the shell command interface
+    // to the shell command interface (this is important for the shell to work)
     myShell.putChar(c);
   }
 }
@@ -63,7 +72,6 @@ void loop()
 // prompt ("> " in this case) to the serial device. 
 void shell_display_prompt(void)
 {
-  Serial.println();
   Serial.print("> ");
   return;
 }

@@ -1,91 +1,53 @@
 /*
- * main.cpp
- *
- * Created on: 2023-04-13
- *     Author: Stefan Trippler TRST
- */
+    echo.ino
+
+    This example registeres an example command ("echo") as well as the 
+    two default callback functions which are called 
+     - when a command prompt ("> ") shall be displayed
+     - when an unknown command is recognized
+
+    Created 2023-05-04
+    By Stefan Trippler
+
+    https://github.com/steftri/shell/
+
+*/
 
 #include <Arduino.h>
-
-#include "shell.h"
-
+#include <shell.h>
 
 
-#define PROJECT_NAME "ERNI Shell"
-
-
+// An object of type "Shell" is needed for operation.
 Shell myShell;
 
 
-
-void cmd_prompt_callback(void)
-{
-  Serial.print("> ");
-  return;
-}
-
-void cmd_not_found(char *pc_Cmd)
-{
-  Serial.print(pc_Cmd); 
-  Serial.println(": command not found");
-  return;
-}
-
-
-
-int cmd_help(int argc, char *argv[])
-{
-  Serial.println("Commands: ");
-  Serial.println("help");
-  Serial.println("version");  
-  Serial.println("example [args]"); 
-  return 0;
-}
-
-
-
-int cmd_version(int argc, char *argv[])
-{
-  Serial.println(PROJECT_NAME);
-  Serial.println(__DATE__ ", " __TIME__); 
-  return 0;
-}
-
-
-
-int cmd_example(int argc, char *argv[])
-{
-  Serial.print("Command name: ");
-  Serial.println(argv[0]);
-  Serial.print("Arguments (including command name): ");
-  Serial.println(argc);
-  for(int i=1; i<argc; i++)
-  {
-    Serial.print(i);
-    Serial.print(": ");
-    Serial.println(argv[i]);
-  }
-  return 0;
-}
+// callback declarations
+void shell_display_prompt(void);
+void shell_cmd_not_found(char *pc_Cmd);
+int shell_cmd_echo(int argc, char *argv[]);
 
 
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println(PROJECT_NAME);
-  Serial.println(__DATE__ ", " __TIME__);
 
-  myShell.setPromptCallback(&cmd_prompt_callback);
-  myShell.setCommandNotFoundCallback(&cmd_not_found);
-  myShell.addCommandCallback("help", &cmd_help);
-  myShell.addCommandCallback("version", &cmd_version);
-  myShell.addCommandCallback("example", &cmd_example);  
+  // registers the function which is to 
+  // be called when a unknown command is recognized
+  // (the function is implemented below)
+  myShell.setCommandNotFoundCallback(&shell_cmd_not_found);
 
-  // clear incoming data from serial port
-  while(Serial.available())
-    Serial.read();
+  // registers the function which outputs the command prompt
+  // (the function is implemented below)
+  myShell.setPromptCallback(&shell_display_prompt);
 
+  // registers an example command (in this case "echo")
+  // (the function is implemented below)
+  // By default, up to 32 different commands can be registered. More
+  // can be configured within the include file shell.h.
+  myShell.addCommandCallback("echo", &shell_cmd_echo);
+
+  // needed for outputting the initial command prompt
   myShell.begin();
 }
 
@@ -93,16 +55,62 @@ void setup()
 
 void loop()
 {
-  char c_Char;
+  if(Serial.available()) {
+    char c = Serial.read();
 
-  while(Serial.available())
-  {
-    c_Char = Serial.read();
-    if(c_Char=='\r')
-      Serial.println();
-    else
-      Serial.write(c_Char);
-    
-    myShell.putChar(c_Char);
+    // mirror back entered characters
+    if(c == '\r') {
+      // if return, also send a complete newline sequence  
+      Serial.println(); 
+    } 
+    else {
+      Serial.write(c);
+    }
+
+    // handover the received character from the serial device 
+    // to the shell command interface (this is important for the shell to work)
+    myShell.putChar(c);
   }
+}
+
+
+// This callback is needed to output the command 
+// prompt ("> " in this case) to the serial device. 
+void shell_display_prompt(void)
+{
+  Serial.print("> ");
+  return;
+}
+
+
+// This callback is called when an unknown command is received. 
+void shell_cmd_not_found(char *pc_Cmd)
+{
+  Serial.print("Command '");
+  Serial.print(pc_Cmd);
+  Serial.println("' not found (try command 'echo')");
+  return;
+}
+
+
+
+// This is the callback for the command "echo". 
+// It is called everytime the command is received.
+// The parameter "argc" holds the number of arguments, 
+// the parameter argv hold an array of arguments  
+// (including the command itself as the first parameter) 
+int shell_cmd_echo(int argc, char *argv[])
+{
+  if(argc<2) {
+    Serial.println("usage: echo <text>");
+    return 0;
+  }
+
+  for(int i=1; i<argc; i++) {
+    Serial.print(argv[i]);
+    Serial.print(" ");
+  }
+  Serial.println();
+
+  return 0;
 }
