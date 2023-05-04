@@ -1,0 +1,24 @@
+# Syntax Coloring Map For Shell
+# https://arduino.github.io/arduino-cli/library-specification/#keywords
+# Formatted by a single true tab (not spaces)
+
+# Datatypes (KEYWORD1)
+Shell	KEYWORD1
+TTPromptCallback	KEYWORD1
+TDefaultCmdCallback	KEYWORD1
+TCmdCallback	KEYWORD1
+Error	KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+setPromptCallback	KEYWORD2
+setCommandNotFoundCallback	KEYWORD2
+addCommandCallback	KEYWORD2
+begin	KEYWORD2
+putChar	KEYWORD2
+reset	KEYWORD2
+
+# Instances (KEYWORD2)
+
+# Constants (LITERAL1)
+RcOK	LITERAL1
+RcError	LITERAL1
