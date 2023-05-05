@@ -20,6 +20,11 @@
 // An object of type "Shell" is needed for operation.
 Shell myShell;
 
+// declarations of callbacks needed for the shell; see below for implementation
+void shell_display_prompt(void);
+void shell_cmd_not_found(char *pc_Cmd);
+int shell_cmd_echo(int argc, char *argv[]);
+
 
 
 void setup()
