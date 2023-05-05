@@ -44,5 +44,5 @@ It does not use dynamic memory allocation.
 
 ## Website
 
-Further information can be found on [GitHub](https://github.com/steftri/shell/lib/).
+Further information can be found on [GitHub](https://github.com/steftri/shell).
 
