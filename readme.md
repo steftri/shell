@@ -86,18 +86,22 @@ Here the integration of the Shell library is shown with a simple Arduino Sketch:
 
 * setup:
 
+  The two implemented mandatory callbacks (`shell_cmd_not_found()` and `shell_display_prompt()`) must be registered to the Shell object.
+
   ```C++
-  // register the function which is to 
-  // be called when a unknown command is recognized
   myShell.setCommandNotFoundCallback(&shell_cmd_not_found);
-
-  // register the function which outputs the command prompt
   myShell.setPromptCallback(&shell_display_prompt);
+  ```
 
-  // registers an example command (in this case "echo")
+  Every command callback (for example `echo()`) must also be registered.
+
+  ```C++
   myShell.addCommandCallback("echo", &shell_cmd_echo);
+  ```
 
-  // needed for outputting the initial command prompt
+  The `begin()` method is neded for initially calling the prmopt callback. 
+
+  ```C++
   myShell.begin();
   ```
 
@@ -112,7 +116,7 @@ Here the integration of the Shell library is shown with a simple Arduino Sketch:
   }
   ```
 
-  It might make sense to echo the entered characters back to the serial line, ohterwise the user does not see the entered command on the terminal program. In this case, the following code can be used:
+  It might make sense to echo the entered characters back to the serial line, otherwise the user does not see the entered command in the terminal program. In this case, the following code can be used:
 
   ```C++
   if(Serial.available()) {
@@ -142,6 +146,10 @@ These are the default limitations. Other limits can be configured within the inc
 
 
 ## Changelog
+
+### 1.0.1
+
+* Documentation improved
 
 ### 1.0.0
 
