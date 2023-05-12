@@ -15,7 +15,7 @@ Shell::Shell(void)
 
 
 
-void Shell::setPromptCallback(const TTPromptCallback *p_PromptCallback)
+void Shell::setPromptCallback(const TPromptCallback *p_PromptCallback)
 {
   mp_PromptCallback = p_PromptCallback;
 }
