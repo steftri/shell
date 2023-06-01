@@ -1,0 +1,69 @@
+@startuml
+
+participant main
+participant PromptCB
+participant CmdNotFoundCB
+participant CmdCB
+
+box "library" #LightBlue
+  participant Shell
+end box
+
+group setup()
+ 
+  main -> Shell : setPromptCallback()
+  main -> Shell : setCommandNotFoundCallback()
+
+  main -> Shell : addCommandCallback()
+
+  main -> Shell ++ : begin()
+  Shell -> Shell ++ : initialize
+  deactivate Shell
+
+  Shell -> PromptCB ++ : call prompt CB 
+
+  deactivate PromptCB
+  deactivate Shell
+
+end group
+
+group loop()
+
+  main -> Shell ++ : putChar() 
+
+  alt character is NOT '\\r'
+
+    Shell -> Shell ++ : append char
+    deactivate Shell
+
+  else character IS '\\r' (carriage return) 
+
+    Shell -> Shell ++ : parse
+
+    alt command is known
+
+      Shell -> CmdCB ++ : call CmdCB
+      return : return
+
+    else command is NOT known
+
+      Shell -> CmdNotFoundCB ++ : call CmdNotFoundCB
+      deactivate CmdNotFoundCB
+
+    end  
+    
+    Shell -> PromptCB ++ : call prompt CB
+    deactivate PromptCB
+    
+    deactivate Shell
+
+  end
+
+  deactivate Shell
+  |||
+
+end group
+
+
+
+@enduml

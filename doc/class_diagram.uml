@@ -1,0 +1,33 @@
+@startuml
+
+skinparam ClassPadding 30
+
+class Shell 
+{
+  - PromptCallback : TPromptCallback *
+  - DefaultCmdCallback : TDefaultCmdCallback *
+  - Commands : struct Command[]
+  - NumberOfCommands : uint16
+  ....
+  - Buffer : char[]
+  - BufferPos : uint16
+  ----
+  + setPromptCallback(TPromptCallback)
+  + setCommandNotFoundCallback(TDefaultCmdCallback)
+  + addCommandCallback(Cmd, TCmdCallback)
+  ....
+  + begin()
+  + putChar(Char)
+  + reset(DisplayPrompt : bool)
+}
+
+struct Command
+{
+  Cmd : char[]
+  Callback : TCmdCallback *
+}
+
+
+Shell *-right- "0..32" Command : "          "
+
+@enduml
