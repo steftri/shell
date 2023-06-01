@@ -5,7 +5,7 @@ Library for supplying a shell command interface.
 
 ## General
 
-The command parser supports the backslash and quotes, the command interface match the main(int argc, char *argv[]) mechanism.
+The command parser supports the backslash and quotes, the command interface match the `main(int argc, char *argv[])` mechanism.
 
 The library does not have any dependencies to other libraries.
 It does not use `new` or `malloc`, so it can be used in an environment where 
@@ -14,27 +14,26 @@ dynamic memory allocation is not available (e.g. safety critical environment).
 
 ## Features
 
-* Implemented as C++ class with common Arduino style guide
-* Low memory consumption overhead
 * Commands can be passed to the library letter by letter or as a complete string
 * Separation of the string into command and arguments
 * Quotation mark support
 * Backslash support to escape spaces or quotes
 * Callback format for commands corresponds to main() with its argc/argv mechanism
+* Implemented as C++ class with common Arduino style guide
+* Low memory consumption overhead
 
 
 ## Integration
 
-Here the integration of the Shell library is shown with a simple Arduino Sketch:
+Here the integration of the Shell library is shown:
 
-* include the library
+* Include the library
 
   ```C++
-  #include <Arduino.h>
   #include <shell.h>
   ```
 
-* create an instance of the Shell class:
+* Create an instance of the Shell class:
 
   ```C++
   Shell myShell;
@@ -42,7 +41,7 @@ Here the integration of the Shell library is shown with a simple Arduino Sketch:
 
 ## Implementation of Callbacks
 
-* Implement the callbacks needed for the shell. You need one callback which simply outputs the prompt (`shell_display_prompt`). You also need a callback which can be called if an unknown command was entered (`shell_cmd_not_found`). And of course you need all the callbacks for the various commands (for example `shell_cmd_echo`).
+* Implement the callbacks needed for the shell. You need one callback which simply outputs the prompt (`shell_display_prompt`). You also need a callback which can be called if an unknown command was entered (`shell_cmd_not_found`). 
 
   ```C++
   // This callback is needed to output the command 
@@ -61,7 +60,11 @@ Here the integration of the Shell library is shown with a simple Arduino Sketch:
     Serial.println("' not found (try command 'echo')");
     return;
   }
+  ```
 
+  And of course you need all the callbacks for the various commands (for example `shell_cmd_echo`):
+
+  ``C++
   // This is the callback for the command "echo". 
   // It is called everytime the command is received.
   // The parameter "argc" holds the number of arguments, 
@@ -130,6 +133,21 @@ Here the integration of the Shell library is shown with a simple Arduino Sketch:
     myShell.putChar(c);
   }
   ```
+
+## Diagrams
+
+### Class Diagram
+
+This diagram illustrates the shell class. There are no other classes or important structures within this library.
+
+![Class Diagram](doc/class_diagram.png)
+
+### Sequence Diagram
+
+This sequence diagram illustrates the initialization and the usage of the shell class. 
+
+![Sequence Diagram](doc/sequence_diagram.png)
+
 
 ## Limitations
                                                
