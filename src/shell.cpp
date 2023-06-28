@@ -6,11 +6,12 @@
 
 
 Shell::Shell(void)
+  : mp_PromptCallback{nullptr}
+  , mp_DefaultCmdCallback{nullptr}
+  , mp_CmdErrorCallback{nullptr}
+  , mu16_NumberOfCommands{0}
+  , mu16_BufferPos{0}
 {
-  mp_PromptCallback = nullptr;
-  mp_DefaultCmdCallback = nullptr;
-  mu16_NumberOfCommands = 0;
-  mu16_BufferPos = 0;
 }
 
 
@@ -21,12 +22,16 @@ void Shell::setPromptCallback(const TPromptCallback *p_PromptCallback)
 }
 
 
-
 void Shell::setCommandNotFoundCallback(const TDefaultCmdCallback *p_DefaultCmdCallback)
 {
   mp_DefaultCmdCallback = p_DefaultCmdCallback;
 }
 
+
+void Shell::setCommandErrorCallback(const TCmdErrorCallback *p_CmdErrorCallback)
+{
+  mp_CmdErrorCallback = p_CmdErrorCallback;
+}
 
 
 int16_t Shell::addCommandCallback(const char *pc_Cmd, const TCmdCallback *p_CmdCallback)
@@ -82,7 +87,8 @@ void Shell::_execCmd(void)
   uint16_t u16_Args = 0;
   bool b_Escaped = false;
   bool b_Quoted = false;
-  char ac_Err[]="<err>";  
+  char ac_Err[]="<err>";
+  int rc = 0;  
   
   // first, parse the string - split it into words, but allow escape character (\) 
   // and quotes ("")
@@ -142,7 +148,11 @@ void Shell::_execCmd(void)
     if(!strcmp(ma_Commands[i].pc_Cmd, argv[0]))
     {
       if(ma_Commands[i].p_Callback)
-        ma_Commands[i].p_Callback(u16_Args, argv);
+      {
+        rc=ma_Commands[i].p_Callback(u16_Args, argv);
+        if(rc && mp_CmdErrorCallback)
+          mp_CmdErrorCallback(argv[0], rc);
+      }  
       if(mp_PromptCallback)
         mp_PromptCallback();
       return;

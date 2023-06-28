@@ -19,12 +19,14 @@ class Shell
 public: 
   typedef void (TPromptCallback)(void);  
   typedef void (TDefaultCmdCallback)(char *pc_Cmd);
+  typedef void (TCmdErrorCallback)(char *pc_Cmd, int rc);
   typedef int (TCmdCallback)(int argc, char *argv[]);
   enum Error {RcOK = 0, RcError = -1};
 
 private:
-  TPromptCallback    *mp_PromptCallback;
+  TPromptCallback     *mp_PromptCallback;
   TDefaultCmdCallback *mp_DefaultCmdCallback;
+  TCmdErrorCallback   *mp_CmdErrorCallback;
 
   struct 
   {
@@ -43,6 +45,7 @@ public:
   // for configuration
   void setPromptCallback(const TPromptCallback *p_PromptCallback);
   void setCommandNotFoundCallback(const TDefaultCmdCallback *p_DefaultCmdCallback);
+  void setCommandErrorCallback(const TCmdErrorCallback *p_CmdErrorCallback);
   int16_t addCommandCallback(const char *pc_Cmd, const TCmdCallback *p_CmdCallback);
 
   // for operation
