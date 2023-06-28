@@ -74,7 +74,7 @@ Here the integration of the Shell library is shown:
 
   And of course you need all the callbacks for the various commands (for example `shell_cmd_echo`):
 
-  ``C++
+  ```C++
   // This is the callback for the command "echo". 
   // It is called everytime the command is received.
   // The parameter "argc" holds the number of arguments, 
