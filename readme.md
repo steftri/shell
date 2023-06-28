@@ -165,6 +165,10 @@ These are the default limitations. Other limits can be configured within the inc
 
 ## Changelog
 
+### 1.1.0
+
+* Support for empty arguments ("") added
+
 ### 1.0.1
 
 * Documentation improved

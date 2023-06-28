@@ -95,6 +95,11 @@ void Shell::_execCmd(void)
     else if(mac_Buffer[i]==SHELL_QUOTE_CHARACTER && !b_Escaped)
     {
       b_Quoted = !b_Quoted;
+      if(!b_ArgFound && u16_Args<SHELL_MAX_ARGS)
+      {
+        argv[u16_Args++]=&ac_Buffer[u16_BufferPos];
+        b_ArgFound = true;
+      }
     }
     else
     { 
