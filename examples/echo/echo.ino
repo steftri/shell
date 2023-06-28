@@ -2,9 +2,10 @@
     echo.ino
 
     This example registeres an example command ("echo") as well as the 
-    two default callback functions which are called 
+    three default callback functions which are called 
      - when a command prompt ("> ") shall be displayed
      - when an unknown command is recognized
+     - when a command returned an error
 
     Created 2023-05-04
     By Stefan Trippler
@@ -23,6 +24,7 @@ Shell myShell;
 // declarations of callbacks needed for the shell; see below for implementation
 void shell_display_prompt(void);
 void shell_cmd_not_found(char *pc_Cmd);
+void shell_cmd_error(char *pc_Cmd, int rc);
 int shell_cmd_echo(int argc, char *argv[]);
 
 
@@ -35,6 +37,11 @@ void setup()
   // be called when a unknown command is recognized
   // (the function is implemented below)
   myShell.setCommandNotFoundCallback(&shell_cmd_not_found);
+
+  // registers the function which is to 
+  // be called when a command returned an error
+  // (the function is implemented below)
+  myShell.setCommandErrorCallback(&shell_cmd_error);
 
   // registers the function which outputs the command prompt
   // (the function is implemented below)
@@ -93,6 +100,17 @@ void shell_cmd_not_found(char *pc_Cmd)
 
 
 
+// This callback is called when a command returned an error code. 
+void shell_cmd_error(char *pc_Cmd, int rc)
+{
+  Serial.print(pc_Cmd);
+  Serial.print(" failed returncode ");
+  Serial.print(rc);
+  Serial.println();
+}
+
+
+
 // This is the callback for the command "echo". 
 // It is called everytime the command is received.
 // The parameter "argc" holds the number of arguments, 
@@ -102,7 +120,7 @@ int shell_cmd_echo(int argc, char *argv[])
 {
   if(argc<2) {
     Serial.println("usage: echo <text>");
-    return 0;
+    return 5; // an error occured - return anything different to 0
   }
 
   for(int i=1; i<argc; i++) {
@@ -111,5 +129,5 @@ int shell_cmd_echo(int argc, char *argv[])
   }
   Serial.println();
 
-  return 0;
+  return 0; // command executed sucessfully
 }

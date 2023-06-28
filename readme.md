@@ -19,6 +19,7 @@ dynamic memory allocation is not available (e.g. safety critical environment).
 * Quotation mark support
 * Backslash support to escape spaces or quotes
 * Callback format for commands corresponds to main() with its argc/argv mechanism
+* Return codes 
 * Implemented as C++ class with common Arduino style guide
 * Low memory consumption overhead
 
@@ -41,7 +42,7 @@ Here the integration of the Shell library is shown:
 
 ## Implementation of Callbacks
 
-* Implement the callbacks needed for the shell. You need one callback which simply outputs the prompt (`shell_display_prompt`). You also need a callback which can be called if an unknown command was entered (`shell_cmd_not_found`). 
+* Implement the callbacks needed for the shell. You need one callback which simply outputs the prompt (`shell_display_prompt`). You also need a callback which can be called if an unknown command was entered (`shell_cmd_not_found`). Additionally you could need a callback which is called when a command returned an error (`shell_cmd_error`).
 
   ```C++
   // This callback is needed to output the command 
@@ -60,6 +61,15 @@ Here the integration of the Shell library is shown:
     Serial.println("' not found (try command 'echo')");
     return;
   }
+
+  // This callback is called when a command returned an error code. 
+  void shell_cmd_error(char *pc_Cmd, int rc)
+  {
+    Serial.print(pc_Cmd);
+    Serial.print(" failed returncode ");
+    Serial.print(rc);
+    Serial.println();
+  }
   ```
 
   And of course you need all the callbacks for the various commands (for example `shell_cmd_echo`):
@@ -74,14 +84,14 @@ Here the integration of the Shell library is shown:
   {
     if(argc<2) {
       Serial.println("usage: echo <text>");
-      return 0;
+      return 5; // an error occured - return anything different to 0
     }
     for(int i=1; i<argc; i++) {
       Serial.print(argv[i]);
       Serial.print(" ");
     }
     Serial.println();
-    return 0;
+    return 0; // command executed sucessfully
   }
   ```
 
@@ -93,6 +103,7 @@ Here the integration of the Shell library is shown:
 
   ```C++
   myShell.setCommandNotFoundCallback(&shell_cmd_not_found);
+  myShell.setCommandErrorCallback(&shell_cmd_error);
   myShell.setPromptCallback(&shell_display_prompt);
   ```
 
@@ -168,6 +179,7 @@ These are the default limitations. Other limits can be configured within the inc
 ### 1.1.0
 
 * Support for empty arguments ("") added
+* Support of error callback added
 
 ### 1.0.1
 
