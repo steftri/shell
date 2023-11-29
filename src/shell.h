@@ -6,12 +6,13 @@
 
 
 
-#define SHELL_MAX_BUFFER_LENGTH  80
-#define SHELL_MAX_COMMANDS       32
-#define SHELL_MAX_ARGS            8
-#define SHELL_EOL_CHARACTER     '\r'
-#define SHELL_ESCAPE_CHARACTER  '\\'
-#define SHELL_QUOTE_CHARACTER    '"'
+#define SHELL_MAX_BUFFER_LENGTH    80
+#define SHELL_MAX_COMMANDS         32
+#define SHELL_MAX_ARGS             8
+#define SHELL_EOL_CHARACTER       '\r'
+#define SHELL_BACKSPACE_CHARACTER '\x08'
+#define SHELL_ESCAPE_CHARACTER    '\\'
+#define SHELL_QUOTE_CHARACTER     '"'
 
 
 class Shell 
@@ -21,7 +22,7 @@ public:
   typedef void (TDefaultCmdCallback)(char *pc_Cmd);
   typedef void (TCmdErrorCallback)(char *pc_Cmd, int rc);
   typedef int (TCmdCallback)(int argc, char *argv[]);
-  enum Error {RcOK = 0, RcError = -1};
+  enum ERc {RcOK = 0, RcError = -1};
 
 private:
   TPromptCallback     *mp_PromptCallback;
@@ -46,7 +47,7 @@ public:
   void setPromptCallback(const TPromptCallback *p_PromptCallback);
   void setCommandNotFoundCallback(const TDefaultCmdCallback *p_DefaultCmdCallback);
   void setCommandErrorCallback(const TCmdErrorCallback *p_CmdErrorCallback);
-  int16_t addCommandCallback(const char *pc_Cmd, const TCmdCallback *p_CmdCallback);
+  ERc addCommandCallback(const char *pc_Cmd, const TCmdCallback *p_CmdCallback);
 
   // for operation
   void begin(void);

@@ -67,8 +67,7 @@ Here the integration of the Shell library is shown:
   {
     Serial.print(pc_Cmd);
     Serial.print(" failed returncode ");
-    Serial.print(rc);
-    Serial.println();
+    Serial.println(rc);
   }
   ```
 
@@ -175,6 +174,11 @@ These are the default limitations. Other limits can be configured within the inc
 
 
 ## Changelog
+
+### 1.2.0
+
+* Backspace support added
+* Return code of addCommandCallback changed to enum
 
 ### 1.1.0
 

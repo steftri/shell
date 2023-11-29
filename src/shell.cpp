@@ -34,7 +34,7 @@ void Shell::setCommandErrorCallback(const TCmdErrorCallback *p_CmdErrorCallback)
 }
 
 
-int16_t Shell::addCommandCallback(const char *pc_Cmd, const TCmdCallback *p_CmdCallback)
+Shell::ERc Shell::addCommandCallback(const char *pc_Cmd, const TCmdCallback *p_CmdCallback)
 {
   if(mu16_NumberOfCommands>=SHELL_MAX_COMMANDS)
     return RcError;
@@ -70,6 +70,11 @@ void Shell::putChar(const char c_Char)
     _execCmd();
     mu16_BufferPos = 0;
   }
+  else if(c_Char==SHELL_BACKSPACE_CHARACTER)
+  {
+    if(mu16_BufferPos>0)
+      mu16_BufferPos--;
+  }   
   else if(mu16_BufferPos<SHELL_MAX_BUFFER_LENGTH)
   {
     mac_Buffer[mu16_BufferPos++] = c_Char;
